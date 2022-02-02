@@ -18,5 +18,7 @@
 
     poetry run python -m pytest
 
-### Покрытие тестами
-[Тесты](/htmlcov/index.html) 
+Покрытие тестами:
+
+    poetry run python -m pytest --cov --cov-report=html
+
