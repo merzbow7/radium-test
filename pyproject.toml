@@ -31,7 +31,10 @@ extras = ["psutil"]
 version = "^2.1.0"
 
 [tool.pytest.ini_options]
-asyncio_mode="auto"
+asyncio_mode = "auto"
+
+[tool.coverage.report]
+exclude_lines = ["if __name__ == .__main__.:"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

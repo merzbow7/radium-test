@@ -6,7 +6,7 @@ from random import SystemRandom
 
 import aioconsole
 
-output_data = [
+vacancy_data = [
     '100 000 руб',
     'Стажёр-программист Python / Python Developer Trainee',
     'Владислав',
@@ -25,15 +25,14 @@ def make_hash(for_hash: str) -> str:
     return hashlib.sha256(for_hash.encode('utf-8')).hexdigest()
 
 
-async def do_main_job(data_for_output: list[str]) -> None:
-    """Do main job."""
+async def do_complete_work(data_for_output: list[str]) -> None:
+    """Print vacancy data and sha256 for input."""
     functions = [print_text(text) for text in data_for_output]
     await asyncio.gather(*functions)
-    await aioconsole.aprint('Введите что-нибудь:', end='')
     input_data = await aioconsole.ainput()
     hash_from_input = make_hash(input_data)
     await aioconsole.aprint(hash_from_input)
 
 
 if __name__ == '__main__':
-    asyncio.run(do_main_job(output_data))
+    asyncio.run(do_complete_work(vacancy_data))

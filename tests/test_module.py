@@ -1,37 +1,52 @@
 # -*- coding: utf-8 -*-
 """Test module for app.py."""
+import asyncio
 import hashlib
 import random
 from string import printable
+from typing import TypeVar
 
 import pytest
 
-from app import do_main_job, make_hash, output_data, print_text
+from app import do_complete_work, make_hash, print_text, vacancy_data
 
-new_random = random.SystemRandom()
+sys_random = random.SystemRandom()
+
+TReplace = TypeVar('TReplace', bound='Replace')
 
 
-def make_random_string(length: int = 25) -> str:
+class Replace(object):
+    """Class for replace string as callable."""
+
+    def __init__(self: TReplace, replace: str = '') -> None:
+        """Init replace string."""
+        self.replace = replace
+
+    async def __call__(self: TReplace, *args) -> str:
+        """Return replace string."""
+        await asyncio.sleep(0)
+        return self.replace
+
+
+async def make_random_string(length: int = 25) -> str:
     """Make random string with printable symbols."""
-    return ''.join(new_random.choice(printable) for _ in range(length))
-
-
-async def rewrite_input() -> str:
-    return make_random_string()
+    await asyncio.sleep(0)
+    return ''.join(sys_random.choice(printable) for _ in range(length))
 
 
 @pytest.mark.asyncio()
 async def test_output(capsys: pytest.CaptureFixture) -> None:
     """Test output."""
-    test_str = make_random_string()
+    test_str = await make_random_string()
     await print_text(test_str)
     captured = capsys.readouterr()
     assert test_str in captured.out
 
 
-def test_hash() -> None:
+@pytest.mark.asyncio()
+async def test_hash() -> None:
     """Test hash generation."""
-    str_for_hash = make_random_string()
+    str_for_hash = await make_random_string()
     sha256 = hashlib.sha256()
     sha256.update(str_for_hash.encode())
     assert sha256.hexdigest() == make_hash(str_for_hash)
@@ -43,8 +58,14 @@ async def test_main_func(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test main function."""
-    monkeypatch.setattr('aioconsole.ainput', rewrite_input)
-    await do_main_job(output_data)
+    random_string = Replace(await make_random_string())
+    hashed_random = make_hash(random_string.replace)
+
+    monkeypatch.setattr('aioconsole.ainput', random_string)
+    await do_complete_work(vacancy_data)
     captured = capsys.readouterr()
 
-    assert all(test_str in captured.out for test_str in output_data)
+    expected_out = [*vacancy_data, hashed_random]
+    assert all(expected_str in captured.out for expected_str in expected_out)
+    print(captured)
+
