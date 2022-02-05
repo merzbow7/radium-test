@@ -5,7 +5,9 @@
 Клонируем:
 
     git clone https://github.com/merzbow7/radium-test.git
-######
+
+<br/>
+
     cd radium-test
 
 Установка зависимостей:

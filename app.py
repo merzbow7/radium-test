@@ -7,7 +7,7 @@ from random import SystemRandom
 import aioconsole
 
 vacancy_data = [
-    '100 000 руб',
+    '80 000 руб',
     'Стажёр-программист Python / Python Developer Trainee',
     'Владислав',
 ]
